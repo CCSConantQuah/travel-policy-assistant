@@ -1,3 +1,8 @@
-# UI and local environment configuration only; AI dependencies come later.
+# Interface and configuration
 streamlit>=1.40,<2.0
 python-dotenv>=1.0,<2.0
+# PDF ingestion, chunking, embeddings, and local storage (no chat model)
+PyMuPDF>=1.26,<2.0
+langchain-text-splitters>=1.0,<2.0
+openai>=2.0,<3.0
+chromadb>=1.0,<2.0

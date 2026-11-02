@@ -23,7 +23,7 @@ def require_login() -> bool:
         return True
 
     st.title("✈️ AI Travel Policy Compliance Assistant")
-    st.caption("Sign in to explore the Phase 1 demonstration.")
+    st.caption("Sign in to explore the travel policy demonstration.")
     expected_username = get_setting("DEMO_USERNAME")
     expected_password = get_setting("DEMO_PASSWORD")
     if not expected_username or not expected_password:

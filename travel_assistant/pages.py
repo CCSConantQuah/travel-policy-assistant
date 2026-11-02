@@ -1,6 +1,8 @@
-"""Phase 1 views. No AI calls, file processing, or policy decisions occur."""
+"""Page views. Q&A and compliance remain interface placeholders."""
 
 import streamlit as st
+
+from travel_assistant.upload_page import documents
 
 
 def home():
@@ -13,9 +15,9 @@ def home():
     with right:
         st.subheader("✅ Compliance Checker")
         st.write("Planned: review flight and accommodation details, with explanations and policy citations.")
-    st.info("Phase 1 demonstrates login, navigation, and interface layouts. AI features are not connected.")
+    st.info("Phase 2 supports synthetic PDF ingestion, embeddings, and local semantic retrieval. Q&A and compliance assessment remain placeholders.")
     st.subheader("Get started")
-    st.write("Explore the pages using the sidebar. Future phases will use synthetic travel policies only.")
+    st.write("Explore the pages using the sidebar. Use Document Upload to process a synthetic travel policy.")
 
 
 def questions():
@@ -49,23 +51,15 @@ def compliance():
     st.caption("Future results: compliant, non-compliant, or insufficient information, with explanations and policy citations.")
 
 
-def documents():
-    st.title("Document Upload")
-    st.warning("Use synthetic travel policy documents only. Do not upload internal agency documents.")
-    st.info("Upload is disabled in Phase 1. No files are processed, stored, or sent to external services.")
-    st.file_uploader("Synthetic policy PDF", type=["pdf"], disabled=True)
-    st.caption("Future phases will add PDF validation, document processing, and policy retrieval.")
-
-
 def about():
     st.title("About Us")
     st.write("This individual AI Bootcamp capstone is a proof of concept for helping officers plan official travel and understand policy requirements.")
     st.subheader("Purpose and scope")
     st.write("The planned assistant combines policy Q&A with an AI-assisted review of proposed flights and accommodation. It supports understanding and review; officers remain responsible for approvals and final decisions.")
     st.subheader("Features")
-    st.markdown("- Policy Q&A with source references (planned)\n- Compliance assessments with explanations and citations (planned)\n- Synthetic policy document upload (planned)\n- Demo login and sidebar navigation (available)")
+    st.markdown("- Policy Q&A with source references (planned)\n- Compliance assessments with explanations and citations (planned)\n- Synthetic PDF ingestion and development retrieval (available)\n- Demo login and sidebar navigation (available)")
     st.subheader("Technology roadmap")
-    st.write("Python and Streamlit power this interface. Later phases may add OpenAI, LangChain, ChromaDB, and PyMuPDF. These integrations are not implemented in Phase 1.")
+    st.write("Python and Streamlit power the interface. PyMuPDF extracts PDF text, LangChain splits it into chunks, OpenAI creates embeddings, and ChromaDB stores them locally. Answer generation and compliance logic are planned for later phases.")
 
 
 def methodology():
@@ -73,7 +67,7 @@ def methodology():
     st.info("Design placeholders only. The architecture and use-case flowcharts will be expanded in later phases.")
     st.subheader("1. Proposed architecture")
     st.code("Streamlit interface → Application services → Policy retrieval → AI response\nSynthetic policy PDF → PDF processing → Embeddings → Local vector store", language="text")
-    st.caption("Planned architecture; only the Streamlit interface exists today.")
+    st.caption("PDF processing, embeddings, and local vector storage are implemented. AI answer generation and compliance assessment remain planned.")
     st.subheader("2. Use-case flowchart: Policy Q&A")
     st.code("Question → Retrieve policy passages → Generate grounded answer → Show citations", language="text")
     st.subheader("3. Use-case flowchart: Compliance checking")

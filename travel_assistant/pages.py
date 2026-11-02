@@ -1,8 +1,9 @@
-"""Page views. Q&A and compliance remain interface placeholders."""
+"""Page views. Compliance checking remains a placeholder."""
 
 import streamlit as st
 
 from travel_assistant.upload_page import documents
+from travel_assistant.chat_page import questions
 
 
 def home():
@@ -11,28 +12,18 @@ def home():
     left, right = st.columns(2)
     with left:
         st.subheader("💬 Travel Policy Q&A")
-        st.write("Planned: ask natural-language questions and receive policy-grounded answers with source references.")
+        st.write("Ask natural-language questions and receive policy-grounded answers with source references.")
     with right:
         st.subheader("✅ Compliance Checker")
         st.write("Planned: review flight and accommodation details, with explanations and policy citations.")
-    st.info("Phase 2 supports synthetic PDF ingestion, embeddings, and local semantic retrieval. Q&A and compliance assessment remain placeholders.")
+    st.info("Phase 3 adds policy Q&A with cited evidence. Synthetic PDF ingestion and local retrieval are available; compliance assessment remains a placeholder.")
     st.subheader("Get started")
     st.write("Explore the pages using the sidebar. Use Document Upload to process a synthetic travel policy.")
 
 
-def questions():
-    st.title("Travel Policy Q&A")
-    st.write("Ask about official travel requirements, allowances, or approvals.")
-    st.info("Interface preview: question answering and source references will be implemented in a later phase.")
-    st.text_area("Your policy question", placeholder="Example: What approval is required before booking a flight?")
-    st.button("Ask policy assistant", disabled=True)
-    st.subheader("Answer and policy sources")
-    st.caption("Future answers and document references will appear here.")
-
-
 def compliance():
     st.title("Travel Policy Compliance Checker")
-    st.info("Interface preview: no compliance assessment is performed in Phase 1.")
+    st.info("Interface preview: compliance assessment is not implemented yet.")
     left, right = st.columns(2)
     with left:
         st.subheader("Flight details")
@@ -57,19 +48,20 @@ def about():
     st.subheader("Purpose and scope")
     st.write("The planned assistant combines policy Q&A with an AI-assisted review of proposed flights and accommodation. It supports understanding and review; officers remain responsible for approvals and final decisions.")
     st.subheader("Features")
-    st.markdown("- Policy Q&A with source references (planned)\n- Compliance assessments with explanations and citations (planned)\n- Synthetic PDF ingestion and development retrieval (available)\n- Demo login and sidebar navigation (available)")
+    st.markdown("- Policy Q&A with source references (available)\n- Compliance assessments with explanations and citations (planned)\n- Synthetic PDF ingestion and development retrieval (available)\n- Demo login and sidebar navigation (available)")
     st.subheader("Technology roadmap")
-    st.write("Python and Streamlit power the interface. PyMuPDF extracts PDF text, LangChain splits it into chunks, OpenAI creates embeddings, and ChromaDB stores them locally. Answer generation and compliance logic are planned for later phases.")
+    st.write("Python and Streamlit power the interface. PyMuPDF extracts PDF text, LangChain splits it into chunks, OpenAI creates embeddings, and ChromaDB stores them locally. OpenAI generates Q&A answers from retrieved passages. Compliance logic remains planned.")
 
 
 def methodology():
     st.title("Methodology")
-    st.info("Design placeholders only. The architecture and use-case flowcharts will be expanded in later phases.")
+    st.info("Phase 3 implements ingestion, retrieval, and grounded policy Q&A. Compliance checking remains a future use case.")
     st.subheader("1. Proposed architecture")
     st.code("Streamlit interface → Application services → Policy retrieval → AI response\nSynthetic policy PDF → PDF processing → Embeddings → Local vector store", language="text")
-    st.caption("PDF processing, embeddings, and local vector storage are implemented. AI answer generation and compliance assessment remain planned.")
+    st.caption("PDF processing, embeddings, local vector storage, and Q&A answer generation are implemented. Compliance assessment remains planned.")
     st.subheader("2. Use-case flowchart: Policy Q&A")
-    st.code("Question → Retrieve policy passages → Generate grounded answer → Show citations", language="text")
+    st.code("Question + recent history → Embed query → Retrieve top 3 active-policy passages\n→ Generate structured claims or insufficient-evidence result\n→ Validate passage IDs and exact evidence quotes → Show answer and metadata citations", language="text")
+    st.write("Questions, history, and document text are untrusted user data, separated from the system grounding rules. Citations come from retrieved metadata. Conversation history resets when the active collection changes; results are discarded if the policy changes while answering.")
     st.subheader("3. Use-case flowchart: Compliance checking")
     st.code("Travel details → Retrieve rules → Assess available evidence\n→ Compliant / Non-compliant / Insufficient information → Explain with citations", language="text")
 

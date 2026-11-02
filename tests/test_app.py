@@ -7,13 +7,14 @@ from streamlit.testing.v1 import AppTest
 
 
 def test_login_navigation_and_logout(monkeypatch):
-    from travel_assistant import upload_page
+    from travel_assistant import chat_page, upload_page
 
     monkeypatch.setenv("DEMO_USERNAME", "test-officer")
     monkeypatch.setenv("DEMO_PASSWORD", "test-password")
     monkeypatch.setattr(dotenv, "load_dotenv", lambda: False)
     # UI smoke checks must not read or write a developer's real policy store.
     monkeypatch.setattr(upload_page, "get_active_policy", lambda: None)
+    monkeypatch.setattr(chat_page, "get_active_policy", lambda: None)
     app = AppTest.from_file(Path(__file__).resolve().parents[1] / "app.py", default_timeout=15).run()
     assert not app.exception
     app.text_input[0].set_value("wrong")

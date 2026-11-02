@@ -1,8 +1,8 @@
 # Interface and configuration
 streamlit>=1.40,<2.0
 python-dotenv>=1.0,<2.0
-# PDF ingestion, chunking, embeddings, and local storage (no chat model)
+# PDF ingestion, chunking, embeddings, local storage, and grounded Q&A
 PyMuPDF>=1.26,<2.0
 langchain-text-splitters>=1.0,<2.0
-openai>=2.0,<3.0
+openai>=2.0,<3.0  # Embeddings and Responses API; no additional framework needed
 chromadb>=1.0,<2.0

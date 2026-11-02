@@ -167,8 +167,9 @@ def process_policy(pdf_bytes: bytes, filename: str, api_key: str,
         return info
 
 
-def retrieve_policy(query: str, api_key: str, store_dir: Path = DEFAULT_STORE) -> list[dict]:
-    """Development search: return up to three chunks, never generate an answer."""
+def retrieve_policy(query: str, api_key: str, store_dir: Path = DEFAULT_STORE,
+                    *, expected_collection: str | None = None) -> list[dict]:
+    """Return up to three chunks; optionally require a specific policy version."""
     query = query.strip()
     if not query or len(query) > 1000:
         raise PolicyError("Enter a search query between 1 and 1,000 characters.")
@@ -176,6 +177,8 @@ def retrieve_policy(query: str, api_key: str, store_dir: Path = DEFAULT_STORE) -
         info = get_active_policy(store_dir)
         if info is None:
             raise PolicyError("Process a synthetic policy PDF before testing retrieval.")
+        if expected_collection is not None and info["collection"] != expected_collection:
+            raise PolicyError("The active policy changed. Please ask your question again.")
         query_vector = embed_texts([query], api_key)[0]
         try:
             collection = _active_collection(_client(store_dir), info)

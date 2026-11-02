@@ -170,3 +170,12 @@ def test_cleanup_failure_does_not_undo_new_policy(embedded_store, monkeypatch):
     assert "cleanup_warning" in new
     assert store.get_active_policy(embedded_store)["filename"] == "new.pdf"
     assert store.retrieve_policy("flight", "mock-key", embedded_store)[0]["source"] == "new.pdf"
+
+
+def test_expected_policy_version_is_checked_before_embedding(embedded_store, monkeypatch):
+    store.process_policy(make_pdf("Hotel rules"), "new.pdf", "mock-key", embedded_store)
+    embed = MagicMock()
+    monkeypatch.setattr(store, "embed_texts", embed)
+    with pytest.raises(PolicyError, match="active policy changed"):
+        store.retrieve_policy("Hotel?", "mock-key", embedded_store, expected_collection="policy_old")
+    embed.assert_not_called()

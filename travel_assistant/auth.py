@@ -5,6 +5,8 @@ import os
 
 import streamlit as st
 
+from travel_assistant.notices import POC_DISCLAIMER
+
 
 def get_setting(name: str) -> str:
     """Prefer environment variables, then top-level Streamlit secrets."""
@@ -22,6 +24,7 @@ def require_login() -> bool:
     if st.session_state.get("authenticated", False):
         return True
 
+    st.warning(POC_DISCLAIMER)
     _, content, _ = st.columns([1, 1.2, 1])
     with content:
         st.title("Welcome")

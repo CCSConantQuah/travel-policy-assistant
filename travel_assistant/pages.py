@@ -8,6 +8,7 @@ from travel_assistant.compliance_page import compliance
 from travel_assistant.documents import PolicyError
 from travel_assistant.vector_store import get_active_policy
 from travel_assistant import methodology_diagrams as diagrams
+from travel_assistant.notices import POC_DISCLAIMER
 
 
 def _navigate(page: str) -> None:
@@ -17,6 +18,7 @@ def _navigate(page: str) -> None:
 
 def home():
     st.title("Plan official travel with policy in view")
+    st.warning(POC_DISCLAIMER)
     st.write("Explore your fictional travel policy and review proposed flights and accommodation with cited evidence.")
     with st.container(border=True):
         st.subheader("Your policy workspace")

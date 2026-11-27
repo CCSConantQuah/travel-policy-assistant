@@ -94,6 +94,21 @@ def get_active_policy(store_dir: Path = DEFAULT_STORE) -> dict | None:
         return info
 
 
+def get_policy_passages(store_dir: Path = DEFAULT_STORE, *, expected_collection: str) -> list[dict]:
+    """Read the complete active text locally for requirement coverage (no API call)."""
+    with _STORE_LOCK:
+        info = get_active_policy(store_dir)
+        if info is None or info["collection"] != expected_collection:
+            raise PolicyError("The active policy changed. Please run the assessment again.")
+        try:
+            rows = _active_collection(_client(store_dir), info).get(include=["documents", "metadatas"])
+            if len(rows["documents"]) != info["chunk_count"] or len(rows["metadatas"]) != info["chunk_count"]:
+                raise ValueError("Incomplete policy text")
+            return [{"text": text, **metadata} for text, metadata in zip(rows["documents"], rows["metadatas"])]
+        except Exception:
+            raise PolicyError("The complete policy text could not be read for requirement coverage. Please retry.") from None
+
+
 def _publish(store_dir: Path, info: dict) -> None:
     """Atomically replace only the manifest after the new collection is complete."""
     temporary = store_dir / f"active_{uuid4().hex}.tmp"

@@ -1,13 +1,13 @@
 """Grounded answer generation, separate from retrieval and Streamlit widgets."""
 
 import json
-import re
 from collections.abc import MutableMapping
 from pathlib import Path
 
 from openai import APITimeoutError, OpenAI, RateLimitError
 
 from travel_assistant.documents import PolicyError
+from travel_assistant.evidence import validate_citation
 from travel_assistant.vector_store import DEFAULT_STORE, get_active_policy, retrieve_policy
 
 DEFAULT_CHAT_MODEL = "gpt-6-luna"
@@ -32,7 +32,7 @@ Otherwise return up to five short claims. Each claim must have a supporting
 passage_id and a verbatim quote from that passage. The quote must support the
 whole claim. Select only supplied passage IDs. Do not put filenames, page numbers,
 links, or citation markers in claim text; the application adds citations itself.
-No compliance assessment of proposed travel arrangements is implemented.
+Use the Travel Policy Compliance Checker for advisory assessments of proposed travel arrangements.
 """
 
 
@@ -105,15 +105,12 @@ def generate_answer(question: str, passages: list[dict], api_key: str,
             return fallback
         lines, citations = [], []
         for index, claim in enumerate(claims, 1):
-            passage = evidence.get(claim["passage_id"])
             text, quote = claim["text"].strip(), claim["quote"].strip()
-            if (passage is None or not text or len(text) > 1000
-                    or re.search(r"\bpages?\s+\d|\.pdf\b|\[\d+\]", text, re.IGNORECASE)
-                    or not quote or quote not in passage["text"]):
+            citation = validate_citation(text, claim["passage_id"], quote, evidence)
+            if citation is None:
                 return fallback
             lines.append(f"{text} [{index}]")
-            citations.append({"number": index, "source": passage["source"],
-                              "page": passage["page"], "quote": quote})
+            citations.append({"number": index, **citation})
         return {"answer": "\n\n".join(lines), "citations": citations}
     except Exception:
         # Refusals/malformed output are not shown as raw provider responses.

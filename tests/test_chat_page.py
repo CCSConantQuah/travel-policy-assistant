@@ -45,7 +45,7 @@ def test_chat_no_policy_and_missing_key(monkeypatch):
     ask = MagicMock()
     monkeypatch.setattr(chat_page, "ask_policy", ask)
     app = AppTest.from_function(render_chat).run()
-    assert "Document Upload" in app.info[0].value
+    assert "Policy Documents" in app.info[0].value
     assert len(app.chat_input) == 0
     active = {"collection": "policy_v1", "filename": "fictional.pdf"}
     app.run()

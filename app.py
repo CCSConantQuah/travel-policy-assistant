@@ -12,7 +12,7 @@ st.set_page_config(page_title="Travel Policy Assistant", page_icon="✈️", lay
 if require_login():
     with st.sidebar:
         st.title("✈️ Travel Policy")
-        st.caption("AI Compliance Assistant · Phase 3")
+        st.caption("AI Compliance Assistant · Phase 4")
         selection = st.radio("Navigation", list(PAGES))
         st.divider()
         st.caption("Use synthetic policy documents only.")

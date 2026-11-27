@@ -45,6 +45,23 @@ def test_extract_preserves_physical_pages_and_filename():
     assert "flight" in pages[0].page_content
 
 
+def test_complete_policy_read_is_local_and_version_checked(embedded_store, monkeypatch):
+    first = store.process_policy(make_pdf("Flights must use Economy class.", "Hotels must have at most 4 stars."),
+                                 "first.pdf", "mock-key", embedded_store)
+    monkeypatch.setattr(store, "embed_texts", MagicMock(side_effect=AssertionError("No embedding call for local read")))
+    passages = store.get_policy_passages(embedded_store, expected_collection=first["collection"])
+    assert len(passages) == first["chunk_count"]
+    assert {p["page"] for p in passages} == {1, 2}
+    assert all(p["source"] == "first.pdf" for p in passages)
+    monkeypatch.setattr(store, "embed_texts", fake_embeddings)
+    second = store.process_policy(make_pdf("Hotel nightly rates must be at most USD 250."), "second.pdf", "mock-key", embedded_store)
+    with pytest.raises(PolicyError, match="changed"):
+        store.get_policy_passages(embedded_store, expected_collection=first["collection"])
+    current = store.get_policy_passages(embedded_store, expected_collection=second["collection"])
+    assert len(current) == 1 and current[0]["source"] == "second.pdf"
+    assert "250" in current[0]["text"] and "stars" not in current[0]["text"]
+
+
 @pytest.mark.parametrize("content,filename", [
     (b"broken PDF", "broken.pdf"), (b"", "empty.pdf"),
     (make_pdf(""), "scan.pdf"), (make_pdf("text"), "policy.txt"),

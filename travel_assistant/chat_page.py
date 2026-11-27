@@ -21,7 +21,7 @@ def _show_message(message: dict) -> None:
 
 def questions():
     st.title("Travel Policy Q&A")
-    st.caption("Ask about the active synthetic policy. Verify answers against the cited passages. Do not enter internal agency information.")
+    st.caption("Explore policy requirements with answers grounded in cited passages. Use fictional information only.")
     try:
         active = get_active_policy()
     except PolicyError as error:
@@ -35,9 +35,14 @@ def questions():
     if st.button("Clear conversation"):
         st.session_state.qa_messages = []
     if active is None:
-        st.info("No active policy. Go to Document Upload in the sidebar and process a synthetic policy PDF first.")
+        st.info("No active policy. Go to Policy Documents in the sidebar and process a synthetic policy PDF first.")
         return
     st.text(f"Active policy: {active['filename']}")
+    if not st.session_state.qa_messages:
+        with st.container(border=True):
+            st.subheader("What would you like to know?")
+            st.write("Ask a question about the active policy. Start with one of these examples:")
+            st.markdown("- Which cabin classes are permitted?\n- What hotel star ratings are allowed?\n- What is the hotel nightly-rate limit?\n- What approval is required before booking travel?")
     for message in st.session_state.qa_messages:
         _show_message(message)
     key = get_setting("OPENAI_API_KEY")

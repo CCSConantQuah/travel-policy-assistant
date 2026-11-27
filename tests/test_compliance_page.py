@@ -62,7 +62,7 @@ def test_ui_renders_individual_findings_and_advisory_summary(monkeypatch):
 def test_no_policy_or_missing_key_disables_assessment(monkeypatch):
     app = setup_page(monkeypatch, active=False)
     assert widget(app, "button", "Check compliance").disabled
-    assert any("Document Upload" in message.value for message in app.info)
+    assert any("Policy Documents" in message.value for message in app.info)
     app = setup_page(monkeypatch, key="")
     widget(app, "text_input", "Origin").set_value("Fictional A")
     widget(app, "text_input", "Destination").set_value("Fictional B").run()

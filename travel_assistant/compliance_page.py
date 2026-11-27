@@ -37,8 +37,9 @@ def compliance():
     st.title("Travel Policy Compliance Checker")
     st.info("Advisory assessment using the active fictional policy. Formal approval remains with the approving authority.")
     st.caption("Use fictional travel details only. Approval statuses and additional context are self-reported. Unknown details can result in Insufficient information.")
+    st.caption("Origin and destination are required to begin. Other details are assessed against applicable policy requirements.")
     left, right = st.columns(2)
-    with left:
+    with left, st.container(border=True):
         st.subheader("Flight details")
         origin = st.text_input("Origin", max_chars=150)
         destination = st.text_input("Destination", max_chars=150)
@@ -49,7 +50,7 @@ def compliance():
         with currency_column:
             airfare_currency = st.selectbox("Airfare currency", [None, *CURRENCIES], format_func=lambda value: value or "Unknown")
         flight_approval = st.selectbox("Flight approval status (self-reported)", APPROVALS)
-    with right:
+    with right, st.container(border=True):
         st.subheader("Accommodation details")
         hotel = st.text_input("Hotel / accommodation", max_chars=150)
         nights = st.number_input("Number of nights", min_value=1, value=1, step=1)
@@ -77,13 +78,15 @@ def compliance():
         storage_error = str(error)
         st.error(storage_error)
     if active is None and storage_error is None:
-        st.info("Go to Document Upload and process a synthetic policy PDF before checking compliance.")
+        st.info("Go to Policy Documents and process a synthetic policy PDF before checking compliance.")
+    if active is not None:
+        st.text(f"Active policy: {active.get('filename', 'Active synthetic policy')}")
     key = get_setting("OPENAI_API_KEY")
     if not key.strip():
         st.caption("Set OPENAI_API_KEY in .env or Streamlit secrets and restart the app.")
     if validation_error:
         st.caption(validation_error)
-    submitted = st.button("Check compliance", type="primary",
+    submitted = st.button("Check compliance", type="primary", use_container_width=True,
                           disabled=validation_error is not None or active is None or not key.strip())
     st.subheader("Assessment")
     if submitted:
@@ -101,4 +104,6 @@ def compliance():
         except PolicyError as error:
             st.error(str(error))
     else:
-        st.caption("Complete the required origin and destination and select Check compliance to assess the supplied details.")
+        with st.container(border=True):
+            st.write("Your advisory assessment will appear here.")
+            st.caption("Complete the required origin and destination and select Check compliance to assess the supplied details.")

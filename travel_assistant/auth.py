@@ -22,25 +22,29 @@ def require_login() -> bool:
     if st.session_state.get("authenticated", False):
         return True
 
-    st.title("✈️ AI Travel Policy Compliance Assistant")
-    st.caption("Sign in to explore the travel policy demonstration.")
-    expected_username = get_setting("DEMO_USERNAME")
-    expected_password = get_setting("DEMO_PASSWORD")
-    if not expected_username or not expected_password:
-        st.error("Demo login is not configured. Set DEMO_USERNAME and DEMO_PASSWORD in .env or Streamlit secrets, then restart the app.")
-        return False
+    _, content, _ = st.columns([1, 1.2, 1])
+    with content:
+        st.title("Welcome")
+        st.write("AI Travel Policy Compliance Assistant")
+        st.caption("AI Bootcamp Capstone · Proof of Concept")
+        st.write("Sign in to explore policy guidance and advisory travel assessments.")
+        expected_username = get_setting("DEMO_USERNAME")
+        expected_password = get_setting("DEMO_PASSWORD")
+        if not expected_username or not expected_password:
+            st.error("Demo login is not configured. Set DEMO_USERNAME and DEMO_PASSWORD in .env or Streamlit secrets, then restart the app.")
+            return False
 
-    with st.form("login", clear_on_submit=True):
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
-        submitted = st.form_submit_button("Sign in", type="primary")
-    if submitted:
-        username_matches = hmac.compare_digest(username.encode(), expected_username.encode())
-        password_matches = hmac.compare_digest(password.encode(), expected_password.encode())
-        if username_matches and password_matches:
-            st.session_state.authenticated = True
-            st.rerun()
-        else:
-            st.error("Incorrect username or password.")
-    st.info("Demonstration access only. Use synthetic data; this is not a production security system.")
+        with st.form("login", clear_on_submit=True):
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            submitted = st.form_submit_button("Sign in", type="primary", use_container_width=True)
+        if submitted:
+            username_matches = hmac.compare_digest(username.encode(), expected_username.encode())
+            password_matches = hmac.compare_digest(password.encode(), expected_password.encode())
+            if username_matches and password_matches:
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("Incorrect username or password.")
+        st.info("Demonstration access only. Use synthetic data; this is not a production security system.")
     return False
